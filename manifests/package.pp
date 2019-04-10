@@ -1,11 +1,12 @@
 # package.pp
 
 define r::package (
-  $r_path       = '',
-  $repo         = 'https://cran.rstudio.com',
-  $dependencies = false,
-  $environment  = undef,
-  $timeout      = 300,
+  $r_path         = '',
+  $repo           = 'https://cran.rstudio.com',
+  $dependencies   = true,
+  $configure_args = '',
+  $environment    = undef,
+  $timeout        = 300,
 ) {
 
     case $::osfamily {
@@ -20,8 +21,8 @@ define r::package (
       }
 
       $command = $dependencies ? {
-        true    => "${binary} -e \"install.packages('${name}', repos='${repo}', dependencies = TRUE)\"",
-        default => "${binary} -e \"install.packages('${name}', repos='${repo}', dependencies = FALSE)\""
+        true    => "${binary} -e \"install.packages('${name}', repos='${repo}', configure.args='${configure_args}' ,dependencies = TRUE)\"",
+        default => "${binary} -e \"install.packages('${name}', repos='${repo}', configure.args='${configure_args}' ,dependencies = FALSE)\""
       }
 
       exec { "install_r_package_${name}":
